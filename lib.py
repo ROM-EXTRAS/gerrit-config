@@ -5,8 +5,8 @@ from urllib.parse import quote_plus
 import requests
 
 class Config:
-    GERRIT_USER = os.environ.get("GERRIT_USER")
-    GERRIT_PASS = os.environ.get("GERRIT_PASS")
+    GERRIT_USER = "droidfreak32"
+    GERRIT_PASS = "AyRyYkhV2DAGf6Q0m615P8C2jZhHZiVUkr8Z8y27Ig"
 
     GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
@@ -15,8 +15,8 @@ class Gerrit:
         self.auth = requests.auth.HTTPBasicAuth(Config.GERRIT_USER, Config.GERRIT_PASS)
 
     def get_projects(self):
-        url = "https://review.lineageos.org/a/projects/?t"
-        resp = requests.get(url, auth=self.auth)
+        url = "https://localhost:8443/a/projects/?t"
+        resp = requests.get(url, auth=self.auth, verify=False)
 
         if resp.status_code != 200:
             raise Exception(f"Error communicating with gerrit: {resp.text}")
