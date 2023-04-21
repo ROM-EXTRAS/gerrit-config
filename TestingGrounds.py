@@ -41,9 +41,12 @@ if __name__ == "__main__":
     change_topic_map = {}
     tweets = []
     for line in open('gerrit.json', 'r'):
+        if json.loads(line)['id'] in change_topic_map.keys():
+            print(f"{json.loads(line)['id']} Is already there!")
+            pass
         change_topic_map[json.loads(line)['id']] = json.loads(line)['topic']
     pass
-    print()
+    print(f"Current Key count: {len(change_topic_map.keys())}")
     print()
 
     for ID, topicname in current_mapping.items():
@@ -51,15 +54,24 @@ if __name__ == "__main__":
         topic = topicname
         try:
             if change_topic_map[change_id] == topicname:
-                pass
+                change_topic_map.pop(change_id)
+                change_topic_map[ID] = topicname
             else:
-                # print(f"Gerrit Topic vs json topic:\n{topicname}\n{change_topic_map[change_id]}\n")
                 print(f"sed -i '/{change_id}/d' gerrit_fresh.json")
-                print(f'echo {{"topic":"{topicname}","id":"{change_id}"}}')
+                print(f'echo \'{{"topic":"{topicname}","id":"{change_id}"}}\'')
                 pass
         except:
             print(f"{change_id} Does not exist in gerrit.json")
 
+
+    for ID, topicname in change_topic_map.items():
+        dict_list = {
+            'topic': topicname,
+            'id': ID
+        }
+        json_object = json.dumps(dict_list)
+        with open("gerrit_fresh.json", "a+") as outfile:
+            outfile.write(json_object + '\n')
 
     for ID, topic in change_topic_map.items():
         try:
