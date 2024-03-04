@@ -46,32 +46,33 @@ if __name__ == "__main__":
             pass
         change_topic_map[json.loads(line)['id']] = json.loads(line)['topic']
     pass
-    print(f"Current Key count: {len(change_topic_map.keys())}")
-    print()
+    print(f"Current JSON Key count: {len(change_topic_map.keys())}")
+    print(f"Current Gerrit Key count: {len(current_mapping.keys())}")
 
-    for ID, topicname in current_mapping.items():
-        project, branch, change_id = ID.split('~')
-        topic = topicname
-        try:
-            if change_topic_map[change_id] == topicname:
-                change_topic_map.pop(change_id)
-                change_topic_map[ID] = topicname
-            else:
-                print(f"sed -i '/{change_id}/d' gerrit_fresh.json")
-                print(f'echo \'{{"topic":"{topicname}","id":"{change_id}"}}\'')
-                pass
-        except:
-            print(f"{change_id} Does not exist in gerrit.json")
+    # Uncomment to vonvert jq generated json to support branch-agnostic mapping
+    # for ID, topicname in current_mapping.items():
+    #     project, branch, change_id = ID.split('~')
+    #     topic = topicname
+    #     try:
+    #         if change_topic_map[change_id] == topicname:
+    #             change_topic_map.pop(change_id)
+    #             change_topic_map[ID] = topicname
+    #         else:
+    #             print(f"sed -i '/{change_id}/d' gerrit_fresh.json")
+    #             print(f'echo \'{{"topic":"{topicname}","id":"{change_id}"}}\'')
+    #             pass
+    #     except:
+    #         print(f"{change_id} Does not exist in gerrit.json")
 
 
-    for ID, topicname in change_topic_map.items():
-        dict_list = {
-            'topic': topicname,
-            'id': ID
-        }
-        json_object = json.dumps(dict_list)
-        with open("gerrit_fresh.json", "a+") as outfile:
-            outfile.write(json_object + '\n')
+    # for ID, topicname in change_topic_map.items():
+    #     dict_list = {
+    #         'topic': topicname,
+    #         'id': ID
+    #     }
+    #     json_object = json.dumps(dict_list)
+    #     with open("gerrit_fresh.json", "a+") as outfile:
+    #         outfile.write(json_object + '\n')
 
     for ID, topic in change_topic_map.items():
         try:
